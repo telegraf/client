@@ -5,7 +5,7 @@ export type Telegram = TelegrafTypegram["Telegram"];
 export type Opts = TelegrafTypegram["Opts"];
 
 interface Api {
-  readonly root: string;
+  readonly root: URL;
   readonly mode: "bot" | "user";
 }
 
@@ -17,7 +17,10 @@ interface CallOptions {
   readonly signal?: AbortSignal;
 }
 
-const defaultApi: Api = { mode: "bot", root: "https://api.telegram.org" };
+const defaultApi: Api = {
+  mode: "bot",
+  root: new URL("https://api.telegram.org"),
+};
 
 function stringify(value: unknown) {
   if (typeof value === "string") return value;
@@ -52,7 +55,7 @@ export class Client {
   ): Promise<ApiResponse<ReturnType<Telegram[M]>>> {
     const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
-    const url = new URL(`/${api.mode}${this.#token}/${method}`, api.root);
+    const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };
     const res = await fetch(url, init).catch(redactToken);
     return await res.json();
