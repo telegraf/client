@@ -58,6 +58,13 @@ export class Client {
     const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };
     const res = await fetch(url, init).catch(redactToken);
+    if (res.status >= 500) {
+      return {
+        ok: false,
+        error_code: res.status,
+        description: res.statusText,
+      };
+    }
     return await res.json();
   }
 }
