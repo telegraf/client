@@ -28,9 +28,28 @@ function stringify(value: unknown) {
   return JSON.stringify(value);
 }
 
-function serialize(payload: Record<string, unknown>) {
+const attachTo = (formData: FormData) =>
+  (entry: any, index: number) => {
+    const result = { ...entry };
+    if (entry.media instanceof Blob) {
+      const id = entry.type + index;
+      result.media = `attach://${id}`;
+      formData.append(id, entry.media);
+    }
+    if (entry.thumb instanceof Blob) {
+      const id = "thumb" + index;
+      result.thumb = `attach://${id}`;
+      formData.append(id, entry.thumb);
+    }
+    return result;
+  };
+
+function serialize(payload: Record<string, any>) {
   const formData = new FormData();
-  for (const [key, value] of Object.entries(payload)) {
+  for (let [key, value] of Object.entries(payload)) {
+    if (key === "media") {
+      value = value.map(attachTo(formData));
+    }
     if (value != null) formData.append(key, stringify(value));
   }
   return formData;
