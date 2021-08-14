@@ -1,4 +1,7 @@
-import { ApiResponse, Typegram } from "https://cdn.skypack.dev/typegram@3?dts";
+import { Blob } from "fetch-blob";
+import { FormData } from "formdata-polyfill/esm.min.js";
+import fetch, { RequestInit } from "node-fetch";
+import type { ApiResponse, Typegram } from "typegram";
 
 type TelegrafTypegram = Typegram<Blob>;
 export type Telegram = TelegrafTypegram["Telegram"];
@@ -76,7 +79,7 @@ export class Client {
     const api = this.options.api ?? defaultApi;
     const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };
-    const res = await fetch(url, init).catch(redactToken);
+    const res = await fetch(url.href, init).catch(redactToken);
     if (res.status >= 500) {
       return {
         ok: false,
@@ -84,6 +87,6 @@ export class Client {
         description: res.statusText,
       };
     }
-    return await res.json();
+    return await res.json() as ApiResponse<ReturnType<Telegram[M]>>;
   }
 }
