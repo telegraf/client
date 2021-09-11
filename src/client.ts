@@ -1,7 +1,7 @@
 import { Blob } from "fetch-blob";
 import { FormData } from "formdata-polyfill/esm.min.js";
 import fetch, { RequestInit } from "node-fetch";
-import type { ApiResponse, Typegram } from "typegram";
+import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
 
 type TelegrafTypegram = Typegram<Blob>;
 export type Telegram = TelegrafTypegram["Telegram"];
