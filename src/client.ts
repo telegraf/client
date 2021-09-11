@@ -59,7 +59,10 @@ function serialize(payload: Record<string, any>) {
 }
 
 function redactToken(error: Error): never {
-  error.message = error.message.replace(/:[^/]+/, ":[REDACTED]");
+  error.message = error.message.replace(
+    /\/(bot|user)(\d+):[^/]+\//,
+    "/$1$2:[REDACTED]/",
+  );
   throw error;
 }
 
@@ -90,3 +93,7 @@ export class Client {
     return await res.json() as ApiResponse<ReturnType<Telegram[M]>>;
   }
 }
+
+redactToken(
+  new Error("http://localhost:8081/bot123456:[REDACTED]/sendMessage"),
+);
