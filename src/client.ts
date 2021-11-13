@@ -1,9 +1,9 @@
-import { Blob } from "fetch-blob";
-import { FormData } from "formdata-polyfill/esm.min.js";
+import { Blob, FormData } from "formdata-node";
 import fetch, { RequestInit } from "node-fetch";
 import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
+import type { StreamFile } from "./stream-file.js";
 
-type TelegrafTypegram = Typegram<Blob>;
+type TelegrafTypegram = Typegram<StreamFile>;
 export type Telegram = TelegrafTypegram["Telegram"];
 export type Opts = TelegrafTypegram["Opts"];
 
@@ -93,7 +93,3 @@ export class Client {
     return await res.json() as ApiResponse<ReturnType<Telegram[M]>>;
   }
 }
-
-redactToken(
-  new Error("http://localhost:8081/bot123456:[REDACTED]/sendMessage"),
-);
