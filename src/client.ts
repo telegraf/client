@@ -1,5 +1,8 @@
+// deno-lint-ignore-file no-explicit-any
+// @ts-expect-error "module": "node12" bug
 import { Blob, FormData } from "formdata-node";
-import fetch, { RequestInit } from "node-fetch";
+// @ts-expect-error "module": "node12" bug
+import type { RequestInit } from "node-fetch";
 import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
 import type { StreamFile } from "./stream-file.js";
 
@@ -78,6 +81,7 @@ export class Client {
     payload: Opts[M],
     { signal }: CallOptions = {},
   ): Promise<ApiResponse<ReturnType<Telegram[M]>>> {
+    const fetch = (await import("node-fetch")).default;
     const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
     const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);

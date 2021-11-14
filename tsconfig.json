@@ -1,15 +1,11 @@
 {
   "include": ["src/"],
   "compilerOptions": {
-    "allowJs": true, // formdata-polyfill
     "declaration": true,
     "declarationMap": true,
-    "module": "ES2020",
-    "moduleResolution": "node",
-    "maxNodeModuleJsDepth": 1, // formdata-polyfill
+    "module": "node12",
     "outDir": "lib/",
     "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2020"
+    "strict": true
   }
 }
