@@ -15,10 +15,6 @@ interface ClientOptions {
   readonly api?: Api;
 }
 
-interface CallOptions {
-  readonly signal?: AbortSignal;
-}
-
 const defaultApi: Api = {
   mode: "bot",
   root: new URL("https://api.telegram.org"),
@@ -76,11 +72,11 @@ export class Client {
     this.#token = token;
   }
 
-  async call<M extends keyof Telegram>(
+  readonly call = async <M extends keyof Telegram>(
     method: M,
     payload: Opts[M],
-    { signal }: CallOptions = {},
-  ): Promise<ApiResponse<ReturnType<Telegram[M]>>> {
+    signal?: AbortSignal,
+  ): Promise<ApiResponse<ReturnType<Telegram[M]>>> => {
     const fetch = (await import("node-fetch")).default;
     const body = await serialize(payload);
     const api = this.options.api ?? defaultApi;
@@ -95,5 +91,5 @@ export class Client {
       };
     }
     return await res.json() as ApiResponse<ReturnType<Telegram[M]>>;
-  }
+  };
 }

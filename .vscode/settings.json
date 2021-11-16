@@ -2,5 +2,5 @@
   "editor.defaultFormatter": "denoland.vscode-deno",
   "editor.formatOnSave": true,
   "deno.lint": true,
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
