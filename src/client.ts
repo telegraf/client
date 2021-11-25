@@ -1,6 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
 import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
 import type { StreamFile } from "./stream-file.js";
+import createDebug from "debug";
+
+const debug = createDebug("telegraf:client");
 
 type TelegrafTypegram = Typegram<StreamFile>;
 export type Telegram = TelegrafTypegram["Telegram"];
@@ -77,6 +80,7 @@ export class Client {
     payload: Opts[M],
     signal?: AbortSignal,
   ): Promise<ApiResponse<ReturnType<Telegram[M]>>> => {
+    debug("HTTP call", method, payload);
     const fetch = (await import("node-fetch")).default;
     const body = await serialize(payload);
     const api = this.options.api ?? defaultApi;
