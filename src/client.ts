@@ -1,6 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
-import type { StreamFile } from "./stream-file.js";
+import { isFileLike, StreamFile } from "./stream-file.js";
+import { fetch, FormData, RequestInit } from "undici";
 import createDebug from "debug";
 
 const debug = createDebug("telegraf:client");
@@ -23,27 +24,22 @@ const defaultApi: Api = {
   root: new URL("https://api.telegram.org"),
 };
 
-async function serialize(payload: Record<string, any>) {
-  const [{ Blob }, { FormData }] = await Promise.all([
-    import("fetch-blob"),
-    import("formdata-polyfill/esm.min.js"),
-  ]);
+function stringify(value: unknown) {
+  if (typeof value === "string") return value;
+  if (isFileLike(value)) return value;
+  return JSON.stringify(value);
+}
+
+function serialize(payload: Record<string, any>) {
   const formData = new FormData();
-
-  function stringify(value: unknown) {
-    if (typeof value === "string") return value;
-    if (value instanceof Blob) return value;
-    return JSON.stringify(value);
-  }
-
   const attach = (entry: any, index: number) => {
     const result = { ...entry };
-    if (entry.media instanceof Blob) {
+    if (isFileLike(entry.media)) {
       const id = entry.type + index;
       result.media = `attach://${id}`;
       formData.append(id, entry.media);
     }
-    if (entry.thumb instanceof Blob) {
+    if (isFileLike(entry.thumb)) {
       const id = "thumb" + index;
       result.thumb = `attach://${id}`;
       formData.append(id, entry.thumb);
@@ -81,8 +77,7 @@ export class Client {
     signal?: AbortSignal,
   ): Promise<ApiResponse<ReturnType<Telegram[M]>>> => {
     debug("HTTP call", method, payload);
-    const fetch = (await import("node-fetch")).default;
-    const body = await serialize(payload);
+    const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
     const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };

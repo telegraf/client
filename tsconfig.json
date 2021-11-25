@@ -3,9 +3,10 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "module": "node12",
+    "module": "commonjs",
     "outDir": "lib/",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "target": "es2021"
   }
 }
