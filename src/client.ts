@@ -65,11 +65,10 @@ function redactToken(error: Error): never {
 }
 
 export class Client {
-  readonly #token: string;
-
-  constructor(token: string, private readonly options: ClientOptions = {}) {
-    this.#token = token;
-  }
+  constructor(
+    readonly token: string,
+    private readonly options: ClientOptions = {},
+  ) {}
 
   readonly call = async <M extends keyof Telegram>(
     method: M,
@@ -79,7 +78,7 @@ export class Client {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
-    const url = new URL(`./${api.mode}${this.#token}/${method}`, api.root);
+    const url = new URL(`./${api.mode}${this.token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };
     const res = await fetch(url.href, init).catch(redactToken);
     if (res.status >= 500) {
