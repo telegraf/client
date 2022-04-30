@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import type { ApiResponse, InputFileProxy as Typegram } from "@grammyjs/types";
+import type { ApiResponse, Typegram } from "typegram";
 import { isFileLike, StreamFile } from "./stream-file.js";
 import { fetch, FormData, RequestInit } from "undici";
 import createDebug from "debug";
