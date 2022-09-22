@@ -9,6 +9,9 @@ const debug = createDebug("telegraf:client");
 type TelegrafTypegram = Typegram<StreamFile>;
 export type Telegram = TelegrafTypegram["Telegram"];
 export type Opts = TelegrafTypegram["Opts"];
+export type Ret = {
+  [M in keyof Opts]: ReturnType<Telegram[M]>;
+};
 
 interface Api {
   readonly root: URL;
@@ -70,11 +73,11 @@ export class Client {
     private readonly options: ClientOptions = {},
   ) {}
 
-  readonly call = async <M extends keyof Telegram>(
+  async call<M extends keyof Telegram>(
     method: M,
     payload: Opts[M],
     signal?: AbortSignal,
-  ): Promise<ApiResponse<ReturnType<Telegram[M]>>> => {
+  ) {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
@@ -88,6 +91,6 @@ export class Client {
         description: res.statusText,
       };
     }
-    return await res.json() as ApiResponse<ReturnType<Telegram[M]>>;
-  };
+    return await res.json() as ApiResponse<Ret[M]>;
+  }
 }
