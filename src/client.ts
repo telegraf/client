@@ -1,10 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
 import type { ApiResponse, Typegram } from "typegram";
 import { isFileLike, StreamFile } from "./stream-file.js";
-import { fetch, FormData, RequestInit } from "undici";
 import createDebug from "debug";
 
-export type { Update } from "typegram";
+export type { Update, UserFromGetMe } from "typegram";
 
 const debug = createDebug("telegraf:client");
 
