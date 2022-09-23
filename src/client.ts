@@ -4,10 +4,14 @@ import { isFileLike, StreamFile } from "./stream-file.js";
 import { fetch, FormData, RequestInit } from "undici";
 import createDebug from "debug";
 
+export type { Update } from "typegram";
+
 const debug = createDebug("telegraf:client");
 
 type TelegrafTypegram = Typegram<StreamFile>;
-export type Telegram = TelegrafTypegram["Telegram"];
+type Telegram = TelegrafTypegram["Telegram"];
+
+export type TelegramP = TelegrafTypegram["TelegramP"];
 export type Opts = TelegrafTypegram["Opts"];
 export type Ret = {
   [M in keyof Opts]: ReturnType<Telegram[M]>;
@@ -77,7 +81,7 @@ export class Client {
     method: M,
     payload: Opts[M],
     signal?: AbortSignal,
-  ) {
+  ): Promise<ApiResponse<Ret[M]>> {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
     const api = this.options.api ?? defaultApi;
