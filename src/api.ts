@@ -1,6 +1,6 @@
 import type { Client, Opts, TelegramP } from "./client.js";
 
-export const createApi = (client: Readonly<Client>) =>
+export const createApi = (client: Readonly<Client>): TelegramP =>
   new Proxy({}, {
     get:
       <M extends keyof Opts>(_: unknown, method: M) =>

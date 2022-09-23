@@ -1,6 +1,6 @@
 {
   "name": "@telegraf/client",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Low-level library for performing Telegram Bot API calls",
   "type": "commonjs",
   "main": "./lib/index.js",
