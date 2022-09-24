@@ -3,13 +3,12 @@ import type { ApiResponse, Typegram } from "typegram";
 import { isFileLike, StreamFile } from "./stream-file.js";
 import createDebug from "debug";
 
-export type { Update, UserFromGetMe } from "typegram";
-
 const debug = createDebug("telegraf:client");
 
-type TelegrafTypegram = Typegram<StreamFile>;
+type TelegrafTypegram = Typegram<InputFile>;
 type Telegram = TelegrafTypegram["Telegram"];
 
+export type InputFile = Blob | StreamFile;
 export type TelegramP = TelegrafTypegram["TelegramP"];
 export type Opts = TelegrafTypegram["Opts"];
 export type Ret = {
@@ -21,7 +20,7 @@ interface Api {
   readonly mode: "bot" | "user";
 }
 
-interface ClientOptions {
+export interface ClientOptions {
   readonly api?: Api;
 }
 
