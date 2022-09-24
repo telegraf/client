@@ -69,6 +69,12 @@ function redactToken(error: Error): never {
   throw error;
 }
 
+export interface Invocation<M extends keyof Opts> {
+  method: M;
+  payload: Opts[M];
+  signal?: AbortSignal;
+}
+
 export class Client {
   constructor(
     readonly token: string,
@@ -76,9 +82,7 @@ export class Client {
   ) {}
 
   async call<M extends keyof Telegram>(
-    method: M,
-    payload: Opts[M],
-    signal?: AbortSignal,
+    { method, payload, signal }: Invocation<M>,
   ): Promise<ApiResponse<Ret[M]>> {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
