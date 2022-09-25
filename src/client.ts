@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
+export type { Update, UserFromGetMe } from "typegram";
 import type { ApiResponse, Typegram } from "typegram";
 import { isFileLike, StreamFile } from "./stream-file.js";
 import createDebug from "debug";
