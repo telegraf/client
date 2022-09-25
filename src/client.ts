@@ -1,12 +1,13 @@
 // deno-lint-ignore-file no-explicit-any
+export type { Update, UserFromGetMe } from "typegram";
 import type { ApiResponse, Typegram } from "typegram";
 import { isFileLike, StreamFile } from "./stream-file.js";
 import createDebug from "debug";
 
 const debug = createDebug("telegraf:client");
 
-type TelegrafTypegram = Typegram<InputFile>;
-type Telegram = TelegrafTypegram["Telegram"];
+export type TelegrafTypegram = Typegram<InputFile>;
+export type Telegram = TelegrafTypegram["Telegram"];
 
 export type InputFile = Blob | StreamFile;
 export type TelegramP = TelegrafTypegram["TelegramP"];
@@ -76,17 +77,21 @@ export interface Invocation<M extends keyof Opts> {
 }
 
 export class Client {
+  readonly options: Required<ClientOptions>;
+
   constructor(
     readonly token: string,
-    private readonly options: ClientOptions = {},
-  ) {}
+    options: ClientOptions = {},
+  ) {
+    this.options = { api: options.api || defaultApi };
+  }
 
   async call<M extends keyof Telegram>(
     { method, payload, signal }: Invocation<M>,
   ): Promise<ApiResponse<Ret[M]>> {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
-    const api = this.options.api ?? defaultApi;
+    const api = this.options.api;
     const url = new URL(`./${api.mode}${this.token}/${method}`, api.root);
     const init: RequestInit = { body, signal, method: "post" };
     const res = await fetch(url.href, init).catch(redactToken);
