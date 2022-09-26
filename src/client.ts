@@ -86,9 +86,9 @@ export class Client {
     this.options = { api: options.api || defaultApi };
   }
 
-  async call<M extends keyof Telegram>(
+  readonly call = async <M extends keyof Telegram>(
     { method, payload, signal }: Invocation<M>,
-  ): Promise<ApiResponse<Ret[M]>> {
+  ): Promise<ApiResponse<Ret[M]>> => {
     debug("HTTP call", method, payload);
     const body = serialize(payload);
     const api = this.options.api;
@@ -103,5 +103,5 @@ export class Client {
       };
     }
     return await res.json() as ApiResponse<Ret[M]>;
-  }
+  };
 }
